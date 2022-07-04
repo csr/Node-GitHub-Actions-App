@@ -1,4 +1,4 @@
-name: Integration
+name: Release
 
 # We want to run this job both when we create a pull reuest on
 # the main branch, as well as when we push to the main branch
