@@ -1,0 +1,25 @@
+name: Integration
+
+# We want to run this job both when we create a pull reuest on
+# the main branch, as well as when we push to the main branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  release:
+    # This job is going to run on a server hosted by GitHub
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    steps:
+    # Checkout into the branch
+    - uses: actions/checkout@v3
+    - run: docker build . -t ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DOCKERHUB_PROJECT_NAME}}
+    - run: echo "${{secrets.DOCKERHUB_ACCESS_TOKEN}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin
+    - run: docker push ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.DOCKERHUB_PROJECT_NAME}}
